@@ -1,10 +1,13 @@
 import java.net.Socket;
+import java.util.*;
+import java.net.*;
+import java.io.*;
 
 /**
  * A class to handle HTTP requests and responses
  * 
  * @author Robert Northard
- * @version 18/12/2013
+ * @version 10/12/2013
  */
 public class RequestHandler extends Thread{
 
@@ -18,25 +21,26 @@ public class RequestHandler extends Thread{
         this.socket = socket;
     }
 
-    /**
-     * Handle HTTP Request and Responses
+	/**
+     * Handle the request as determined by the protocal
      */
     @Override
     public void run(){
         try{
-            //get http request
-            HTTPRequest req = new HTTPRequest(socket.getInputStream());
-            req.getRequest();
-            
-            //handle HTTP response
+			//get request
+			HTTPRequest req = HTTPRequest.parseRequest(HTTPRequest.recieveRequest(socket.getInputStream()));
+			
+			//generate HTTP response
             HTTPResponse resp = new HTTPResponse(req);
-            resp.handleRequest();
-            resp.write(socket.getOutputStream());
-            
+			resp.handleRequest();
+			//write http response
+            resp.writeResponse(this.socket.getOutputStream());
+
+			//terminate communication
             socket.close();
+
         }catch(Exception e){
             e.printStackTrace();
         }
     }
-
 }
