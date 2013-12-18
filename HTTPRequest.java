@@ -2,7 +2,7 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
-public class HTTPRequest extends Thread{
+public class HTTPRequest{
 
     private InputStream in = null;
     List<String> requestLines = null;

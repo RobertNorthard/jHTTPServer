@@ -2,10 +2,10 @@ import java.util.*;
 import java.io.*;
 
 /**
- * Write a description of class HTTPReponse here.
+ * A class to deal with HTTP Responses
  * 
- * @author (your name) 
- * @version (a version number or a date)
+ * @author Robert Northard
+ * @version 18/12/2013
  */
 public class HTTPResponse
 {
@@ -18,6 +18,9 @@ public class HTTPResponse
         this.request = request;
     }
     
+    /**
+     * Handle HTTP response
+     */
     public void handleRequest()
                     throws IOException{
         
@@ -38,6 +41,9 @@ public class HTTPResponse
         } 
     }
     
+    /**
+     * Reads the contents of a file
+     */
     public void getFile(File file)
                                 throws IOException{
                                     
@@ -53,6 +59,9 @@ public class HTTPResponse
         in.close(); 
     }
     
+    /**
+     * Write the HTTP headers and file if applicable to client
+     */
     public void write(OutputStream out)
                                 throws IOException{
         for(String header : this.headers)
@@ -62,6 +71,9 @@ public class HTTPResponse
             out.write(this.content);
     }
     
+    /**
+     * Set the HTTP Headers
+     */
     public void setHeaders(ResponseCode code){
         
          headers.add(this.HTTP_VERSION  + " " + code.toString() + "\r\n");
