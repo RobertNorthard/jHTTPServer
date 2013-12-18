@@ -2,7 +2,7 @@ import java.util.*;
 import java.io.*;
 
 /**
- * A class to deal with HTTP Responses
+ * A class that represents a HTTP response.
  * 
  * @author Robert Northard
  * @version 18/12/2013
@@ -12,11 +12,21 @@ public class HTTPResponse
     private static final String HTTP_VERSION = "HTTP/1.1";
     private List<String> headers = new ArrayList<String>();
     private byte[] content = null;
-    
+	private HTTPRequest request = null;
+
+	/**
+	* Constructor for class HTTP response
+	* @param request HTTP request to generate a HTTP response for
+	*/
+    public HTTPResponse(HTTPRequest request) throws IOException{
+		this.request = request; 
+	}
+
     /**
      * Handle HTTP response
+ 	 * @param request HTTP request to generate a HTTP response for
      */
-    public void handleRequest(HTTPRequest request) throws IOException{
+    public void handleRequest() throws IOException{
 
       	String resourcePath = "www/" + request.getResource();
 
@@ -38,6 +48,19 @@ public class HTTPResponse
 				}else
 					this.setHeaders(ResponseCode._404);
         } 
+    }
+
+	/**
+     * Write the HTTP headers and file if applicable to client
+     */
+    public void writeResponse(OutputStream out) throws IOException{
+		//write headers
+        for(String header : headers)
+            out.write(header.getBytes());
+        
+		//write content
+        if(this.content != null)
+           out.write(this.content);
     }
 
     /**
