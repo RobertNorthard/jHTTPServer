@@ -10,6 +10,8 @@ import java.util.*;
  */
 public class HTTPServer
 {
+    private static final int DEFAULT_PORT = 8000;
+   
     private String name = "";
     private String directory = "";
     private ServerSocket serverSocket = null;
@@ -23,8 +25,19 @@ public class HTTPServer
     public HTTPServer(String name, int port, String directory)
     throws IOException{
 
+        if(!isValidPort(port))
+            port = DEFAULT_PORT;
+            
         this.serverSocket = new ServerSocket(port);
         this.directory = directory;
+    }
+    
+    /**
+     * Return true if valid port number, 0 - 65535 inclusive.
+     * @return true if valid port number
+     */
+    public static boolean isValidPort(int port){      
+        return (port > 0 && port < 65535);
     }
 
     /**
