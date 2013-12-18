@@ -49,29 +49,7 @@ public class HTTPServer
 
         while(true){
             Socket conn = this.serverSocket.accept();
-            new Client(conn).start();
+            new RequestHandler(conn).start();
         }    
-    }
-
-    private class Client extends Thread{
-
-        Socket in = null;
-
-        public Client(Socket in){
-            this.in = in;
-        }
-
-        public void run(){
-            try{
-                HTTPRequest req = new HTTPRequest(in.getInputStream());
-                req.getRequest();
-                HTTPResponse resp = new HTTPResponse(req);
-                resp.handleRequest();
-                resp.write(in.getOutputStream());
-            }catch(Exception e){
-                System.out.println(e.getMessage());
-            }
-        }
-
     }
 }
