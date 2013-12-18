@@ -6,7 +6,7 @@ Last Updated: 18/12/2013
 Basic Java HTTP Server.
 
 TODO:
-  - connection not terminating after request
+  - <del>connection not terminating after request</del>
   - implement other HTTP status code
 
 
