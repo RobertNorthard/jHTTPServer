@@ -45,10 +45,11 @@ public class HTTPServer
     public void run()
     throws IOException{
 
-        System.out.println("Server listening on: " + this.serverSocket.getInetAddress() + ":" + this.serverSocket.getLocalPort());
+        System.out.println("Server listening on: " + this.serverSocket.getInetAddress().getHostAddress() + ":" + this.serverSocket.getLocalPort());
 
         while(true){
             Socket conn = this.serverSocket.accept();
+            System.out.println("Accepted Connection: " + conn.getRemoteSocketAddress() + " " + new Date());
             new RequestHandler(conn).start();
         }    
     }
