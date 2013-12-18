@@ -9,8 +9,8 @@ public class Tester
 {
     public static void main(String[] args) 
                                        throws Exception{
-    
-        new HTTPServer("Hi", 9000).run(); 
+ 
+        new HTTPServer(9000).run(); 
         
     }
     
