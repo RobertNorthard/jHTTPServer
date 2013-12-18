@@ -12,7 +12,6 @@ public class HTTPServer
 {
     private static final int DEFAULT_PORT = 8000;
 
-    private String name = "";
     private String directory = "";
     private ServerSocket serverSocket = null;
 
@@ -22,12 +21,8 @@ public class HTTPServer
      * @param port port listening number
      * @trows IOException
      */
-    public HTTPServer(String name, int port)
-    throws IOException{
-
-        if(!isValidPort(port))
-            port = DEFAULT_PORT;
-
+    public HTTPServer(int port) throws IOException{
+        if(!isValidPort(port)) port = DEFAULT_PORT;
         this.serverSocket = new ServerSocket(port);
     }
 
@@ -42,8 +37,7 @@ public class HTTPServer
     /**
      * Invoke to start
      */
-    public void run()
-    throws IOException{
+    public void run() throws IOException{
 
         System.out.println("Server listening on: " + this.serverSocket.getInetAddress().getHostAddress() + ":" + this.serverSocket.getLocalPort());
 
