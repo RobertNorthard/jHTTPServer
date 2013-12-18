@@ -8,7 +8,7 @@ Basic Java HTTP Server.
 TODO:
   - <del>connection not terminating after request</del>
   - implement other HTTP status code
-
+  -  log HTTP Requests
 
 
 Example use:
