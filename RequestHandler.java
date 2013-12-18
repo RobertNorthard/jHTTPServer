@@ -35,7 +35,7 @@ public class RequestHandler extends Thread{
             
             socket.close();
         }catch(Exception e){
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 
