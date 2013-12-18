@@ -37,16 +37,46 @@ public class HTTPServer
 
         while(true){
             Socket conn = this.serverSocket.accept();
-            new client(conn).start();
+            new Request(conn).start();
         }    
     }
 
-    private class client extends Thread{
-        
+    private class Request extends Thread{
+
         Socket client = null;
-        
-        public client(Socket client){
+
+        public Request(Socket client){
             this.client = client;
+        }
+
+        public void sendHTTPResponse(String statusCode, String data)
+        throws Exception {
+
+            String reply  = "HTTP/1.1 " + statusCode + "\r\n" +
+                "Connection: close\r\n" +
+                "Server: Robert's HTTP Server\r\n" +
+                "Content-Type: text/html\r\n" +
+                "\r\n" +
+                data;
+
+            this.client.getOutputStream().write(reply.getBytes());
+
+        }
+        public void sendFile(InputStream in, OutputStream out)
+        throws Exception{
+
+            byte[] buffer = new byte[1024];
+
+            while(true){
+
+                int rc = in.read(buffer, 0, 1024);
+
+                if(rc < 0) break;
+
+                out.write(buffer, 0, rc);
+
+            }
+
         }
 
         public void run(){
@@ -76,41 +106,21 @@ public class HTTPServer
                 String reply = "";
 
                 if(!requestType.equals("GET")){
-                    reply="HTTP/1.0 501 Not Implemented\r\n" +
-                    "Connection: close\r\n" + "Content-Type: text/html\r\n" +
-                    "\r\n" +
-                    "<h1>>Not implemented</h1>\r\n";
+
+                    this.sendHTTPResponse("HTTP/1.0 501 Not Implemented\r\n", "<h1>501</h1>");
+                    
+
                 }else if (!file.exists() || requestedResource.equals("/")){
-                    reply="HTTP/1.0 404 Not Found\r\n" +
-                    "Connection: close\r\n" + "Content-Type: text/html\r\n" +
-                    "\r\n" +
-                    "<h1>Sorry, work in progress</h1>\r\n";
+
+                    this.sendHTTPResponse("404 Not Found\r\n", "<h1> File Not Found </h1>");
+
                 }else{
-                    reply ="HTTP/1.1 200 OK\r\n" +
-                    "Connection: close\r\n" +
-                    "Server: Robert's HTTP Server\r\n" + 
-                    "Content-Length: " + file.length() + "\r\n" +
-                    "Content-Type: text/html\r\n" +
-                    "\r\n";
 
-                    OutputStream outs = this.client.getOutputStream();
-                    outs.write(reply.getBytes());
-
-                    InputStream in = new FileInputStream(file);
-                    byte[] data = new byte[1024];
-
-                    while(true){
-                        int rc = in.read(data, 0, data.length);
-
-                        if(rc <= -1 )break;
-                        outs.write(data, 0, rc);
-
-                    }
-
+                   this.sendHTTPResponse("200 OK", null);
+                   this.sendFile(new FileInputStream(file), this.client.getOutputStream());
                 }
 
-                this.client.getOutputStream().write(reply.getBytes());       
-
+                this.client.getOutputStream().write(reply.getBytes());
                 this.client.close();
 
             }catch(Exception e){
