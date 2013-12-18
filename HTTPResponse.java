@@ -22,7 +22,6 @@ public class HTTPResponse
                     throws IOException{
         
         String requestedResource = this.request.getResource();
-        System.out.println(this.request.getRequestMethod());
         switch(this.request.getRequestMethod()){
             
             case HEAD: 
@@ -35,7 +34,6 @@ public class HTTPResponse
                     this.getFile(file);
                 }else{
                     this.setHeaders(ResponseCode._404);
-                    System.out.println(headers);
                 }
         } 
     }
