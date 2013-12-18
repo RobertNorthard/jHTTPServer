@@ -38,7 +38,7 @@ public class HTTPResponse
         } 
     }
     
-    public byte[] getFile(File file)
+    public void getFile(File file)
                                 throws IOException{
                                     
         InputStream in = new FileInputStream(file);
@@ -51,7 +51,6 @@ public class HTTPResponse
         }
         
         in.close(); 
-        return this.content;
     }
     
     public void write(OutputStream out)
@@ -59,10 +58,8 @@ public class HTTPResponse
         for(String header : this.headers)
             out.write(header.getBytes());
         
-        if(this.content.length != 0)
+        if(this.content != null)
             out.write(this.content);
-            
-        out.close();
     }
     
     public void setHeaders(ResponseCode code){
@@ -70,8 +67,7 @@ public class HTTPResponse
          headers.add(this.HTTP_VERSION  + " " + code.toString() + "\r\n");
                 headers.add("Date: " + new Date().toString()+ "\r\n");
                 headers.add("Server: Robert's Webserver"+ "\r\n");
-                headers.add("Connection: close"+ "\r\n");
+                headers.add("Connection: close"+ "\r\n\r\n");
         
-    }
-    
+    } 
 }
