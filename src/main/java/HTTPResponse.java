@@ -23,9 +23,9 @@ public class HTTPResponse
 	}
 
     /** TODO: other response codes
-     * Handle HTTP response
- 	 * @param request HTTP request to generate a HTTP response for
-     */
+    * Handle HTTP response
+ 	* @param request HTTP request to generate a HTTP response for
+    */
     public void handleRequest() throws IOException{
 
       	String resourcePath = "www/" + request.getResource();
@@ -51,8 +51,8 @@ public class HTTPResponse
     }
 
 	/**
-     * Write the HTTP headers and file if applicable to client
-     */
+    * Write the HTTP headers and file if applicable to client
+    */
     public void writeResponse(OutputStream out) throws IOException{
 		//write headers
         for(String header : headers)
@@ -64,8 +64,8 @@ public class HTTPResponse
     }
 
     /**
-     * Reads the contents of a file
-     */
+    * Reads the contents of a file
+    */
     public void setContent(File file) throws IOException{                             
         InputStream in = new FileInputStream(file);
         this.content = new byte[(int)file.length()];
@@ -79,8 +79,8 @@ public class HTTPResponse
     }
     
     /**
-     * Set the HTTP Headers
-     */
+    * Set the HTTP Headers
+    */
     public void setHeaders(ResponseCode code){
          headers.add(this.HTTP_VERSION  + " " + code.toString() + "\r\n");
                 headers.add("Date: " + new Date().toString()+ "\r\n");
