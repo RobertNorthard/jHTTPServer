@@ -3,7 +3,7 @@ import java.net.*;
 import java.util.*;
 
 /**
- * A class to handle HTTP requests. Only takes into account first line.
+ * A class that represents a HTTP request.
  * 
  * @author Robert Northard
  * @version 18/12/2013
@@ -54,6 +54,14 @@ public class HTTPRequest{
 		}
 		
 		return new HTTPRequest(method, resource, version);
+    }
+
+	/**
+     * Read a request, only need first line.
+     */
+    public static String recieveRequest(InputStream in) throws IOException{
+        Scanner scan = new Scanner(in);
+        return scan.nextLine();
     }
 
 	/**
