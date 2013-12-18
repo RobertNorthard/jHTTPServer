@@ -12,6 +12,7 @@ import java.io.*;
 public class RequestHandler extends Thread{
 
     private Socket socket = null;
+	//have http request and responses as fields?
 
     /**
      * Constructor for class RequestHandler
