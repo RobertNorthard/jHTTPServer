@@ -22,7 +22,7 @@ public class HTTPResponse
 		this.request = request; 
 	}
 
-    /**
+    /** TODO: other response codes
      * Handle HTTP response
  	 * @param request HTTP request to generate a HTTP response for
      */
