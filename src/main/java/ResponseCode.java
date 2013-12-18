@@ -89,7 +89,7 @@ public enum ResponseCode
 
     private final String response;
 
-    ResponseCode(String response) {
+    private ResponseCode(String response) {
         this.response = response;
     }
 
