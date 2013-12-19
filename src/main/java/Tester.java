@@ -1,13 +1,13 @@
+import java.net.*;
 
 /**
- * A tester class for HTT Server class
+ * A tester class for HTTP Server class
  * 
- * @author (your name) 
- * @version (a version number or a date)
+ * @author Robert Northard 
  */
 public class Tester
 {
     public static void main(String[] args) throws Exception{
-        new HTTPServer(9000).run();    
+	    new HTTPServer(9000).run();
     }   
 }
