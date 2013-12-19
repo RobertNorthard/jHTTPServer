@@ -37,16 +37,16 @@ public class HTTPResponse
                 break;
             case GET: 
                 File file = new File(resourcePath);
-				//direct to index.html if resource /
-				if(request.getResource().equals("/")){
-					file = new File("www/index.html");
+                //direct to index.html if resource /
+                if(request.getResource().equals("/")){
+				    file = new File("www/index.html");
 					this.setHeaders(ResponseCode._200);
 					this.setContent(file); 
-               } else if (file.exists()){
+                }else if (file.exists()){
 					this.setHeaders(ResponseCode._200);
                     this.setContent(file);
-				}else
-					this.setHeaders(ResponseCode._404);
+                }else
+                    this.setHeaders(ResponseCode._404);
         } 
     }
 
