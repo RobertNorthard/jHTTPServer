@@ -12,7 +12,7 @@ import java.io.*;
 public class RequestHandler extends Thread{
 
     private Socket socket = null;
-	//have http request and responses as fields?
+    //have http request and responses as fields?
 
     /**
      * Constructor for class RequestHandler
@@ -22,22 +22,20 @@ public class RequestHandler extends Thread{
         this.socket = socket;
     }
 
-	/**
+    /**
      * Handle the request as determined by the protocal
      */
     @Override
     public void run(){
         try{
-			//get request
-			HTTPRequest req = HTTPRequest.parseRequest(HTTPRequest.recieveRequest(socket.getInputStream()));
-			
-			//generate HTTP response
+            //get request
+            HTTPRequest req = HTTPRequest.parseRequest(HTTPRequest.recieveRequest(socket.getInputStream()));
+            //generate HTTP response
             HTTPResponse resp = new HTTPResponse(req);
-			resp.handleRequest();
-			//write http response
+            resp.handleRequest();
+            //write http response
             resp.writeResponse(this.socket.getOutputStream());
-
-			//terminate communication
+            //terminate communication
             socket.close();
 
         }catch(Exception e){
