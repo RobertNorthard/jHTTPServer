@@ -16,6 +16,7 @@ public class HTTPRequest{
     private String resource = "";
     private String version = "";
 
+    //key mapping from header field to value
     private Map<String, String> headers = new HashMap<String, String>();
 
     /**
@@ -38,7 +39,7 @@ public class HTTPRequest{
      * pre-condition: valid http request line
      * @return a valid HTTP Request, null if not valid.
      */
-    public static HTTPRequest parseRequest(InputStream in){
+    public static HTTPRequest parseRequest(InputStream in) throws IOException{
         Scanner scan = new Scanner(in);
         String line = scan.nextLine();
         String[] parts = line.split(" ");
@@ -59,19 +60,23 @@ public class HTTPRequest{
 
             resource = parts[1];
             version = parts[2];
+
+            //get headers
             line = scan.nextLine();
             while(line.length() != 0){
                 parts = line.split(":");
                 headers.put(parts[0], parts[1]);
                 line = scan.nextLine();
             }
+            in.close();
             return new HTTPRequest(method, resource, version, headers);
         }
+        in.close();
         return null;
     }
 
     /**
-    *   Return true if valid HTTP Request
+    *   Return true if valid HTTP Request, for HTTP/1.1 Header field required.
     *   @return true if valid HTTP request
     */
     public boolean isValidRequest(){
@@ -90,6 +95,14 @@ public class HTTPRequest{
      */
     public void setResource(String resource){
         this.resource = resource;
+    }
+
+    /**
+     * Set HTTP version
+     * @param version updated HTTP version
+     */
+    public String setVersion(String version){
+        return this.version = version;
     }
 
     /**
@@ -114,5 +127,38 @@ public class HTTPRequest{
      */
     public MethodCode getRequestMethod(){
         return this.method;
+    }
+
+    /**
+    *  Return value associated with header field name
+    *  @param header field name, i.e. Host
+    *  @return return value associated with header field name, null if key mapping not present.
+    */
+    public String getHeader(String key){
+        return this.headers.get(key);
+    }
+
+    /**
+    *  Return HTTP Headers
+    *  @return HTTP headers, null if none.
+    */
+    public Map<String, String> getHeaders(){
+        return this.headers;
+    }
+
+    /*
+    *  Return a string representation of a http request
+    *  @return a string representation of a http request
+    */ 
+    @Override
+    public String toString(){
+
+        StringBuilder request = new StringBuilder(this.method + " " + this.resource + " " + this.version + "\r\n");
+
+        for(String key: this.headers.keySet())
+            request.append(key + ":" + this.headers.get(key));
+
+        return request.toString();
+
     }
 }
