@@ -16,31 +16,37 @@ public class HTTPRequest{
     private String resource = "";
     private String version = "";
 
+    private Map<String, String> headers = new HashMap<String, String>();
+
     /**
      * Constructor for class HTTPRequest
      * @param method http request type
      * @param resource requested resource name
      * @param version http version
+     * @param headers, map containing header mappings
      */
-    public HTTPRequest(MethodCode method, String resource, String version){
+    public HTTPRequest(MethodCode method, String resource, String version, Map<String, String> headers){
         this.method = method;
         this.resource = resource;
         this.version = version;
+        this.headers = headers;
     }
 
     /**
-     * Parse first HTTP request line
+     * Parse first HTTP request and store headers
      * Example: GET / HTTP/1.1
-     * Break it down into request type, requested resource and HTTP version.
      * pre-condition: valid http request line
-     * @return a HTTP Request
+     * @return a valid HTTP Request, null if not valid.
      */
-    public static HTTPRequest parseRequest(String requestLine){
-        String[] parts = requestLine.split(" ");
+    public static HTTPRequest parseRequest(InputStream in){
+        Scanner scan = new Scanner(in);
+        String line = scan.nextLine();
+        String[] parts = line.split(" ");
 
         MethodCode method = null;
         String resource = null;
         String version = null;
+        Map<String,String> headers = new HashMap<String,String>();
 
         if(parts.length == 3){
 
@@ -53,19 +59,29 @@ public class HTTPRequest{
 
             resource = parts[1];
             version = parts[2];
-
-            return new HTTPRequest(method, resource, version);
+            line = scan.nextLine();
+            while(line.length() != 0){
+                parts = line.split(":");
+                headers.put(parts[0], parts[1]);
+                line = scan.nextLine();
+            }
+            return new HTTPRequest(method, resource, version, headers);
         }
-
         return null;
     }
 
     /**
-     * Read a request, only need first line.
-     */
-    public static String recieveRequest(InputStream in) throws IOException{
-        Scanner scan = new Scanner(in);
-        return scan.nextLine();
+    *   Return true if valid HTTP Request
+    *   @return true if valid HTTP request
+    */
+    public boolean isValidRequest(){
+
+         if (this.method != MethodCode.UNRECOGNIZED && this.resource.startsWith("/"))
+                if (this.version.equals("HTTP/1.1") && this.headers.containsKey("Host"))
+                    return true;
+                else if (this.version.equals("HTTP/1.0"))
+                    return true;
+        return false;
     }
 
     /**

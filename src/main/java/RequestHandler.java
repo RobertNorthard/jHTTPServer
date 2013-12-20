@@ -2,6 +2,8 @@ import java.net.Socket;
 import java.util.*;
 import java.net.*;
 import java.io.*;
+import http.HTTPRequest;
+import http.HTTPResponse;
 
 /**
  * A class to handle HTTP requests and responses
@@ -29,11 +31,10 @@ public class RequestHandler extends Thread{
     public void run(){
         try{
             //get request
-            HTTPRequest req = HTTPRequest.parseRequest(HTTPRequest.recieveRequest(socket.getInputStream()));
+            HTTPRequest req = HTTPRequest.parseRequest(this.socket.getInputStream());
             //generate HTTP response
+
             HTTPResponse resp = new HTTPResponse(req);
-            resp.handleRequest();
-            //write http response
             resp.writeResponse(this.socket.getOutputStream());
             //terminate communication
             socket.close();

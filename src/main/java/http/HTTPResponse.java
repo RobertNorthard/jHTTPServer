@@ -22,15 +22,15 @@ public class HTTPResponse
      */
     public HTTPResponse(HTTPRequest request) throws IOException{
         this.request = request; 
+        this.handleRequest();
     }
 
     /** TODO: other response codes
      * Handle HTTP response
-     * @param request HTTP request to generate a HTTP response for
      */
-    public void handleRequest() throws IOException{
+    private void handleRequest() throws IOException{
 
-        String resourcePath = "www/" + request.getResource();
+        String resourcePath = "www" + request.getResource();
 
         switch(request.getRequestMethod()){
 
@@ -47,6 +47,7 @@ public class HTTPResponse
             }else if (file.exists()){
                 this.setHeaders(ResponseCode._200);
                 this.setContent(file);
+                System.out.println("file exists");
             }else
                 this.setHeaders(ResponseCode._404);
         } 
