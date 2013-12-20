@@ -25,12 +25,14 @@ public class HTTPResponse
         this.handleRequest();
     }
 
-    /** TODO: other response codes
-     * Handle HTTP response
+    /**
+     * Handle HTTP response, HEAD and GET implemented.
      */
     private void handleRequest() throws IOException{
 
-        String resourcePath = "www" + request.getResource();
+        String resourcePath = "www" + this.request.getResource();
+        File dir = new File("www/");
+        File[] dirContents = dir.listFiles();
 
         switch(request.getRequestMethod()){
 
@@ -41,15 +43,34 @@ public class HTTPResponse
             File file = new File(resourcePath);
             //direct to index.html if resource /
             if(request.getResource().equals("/")){
-                file = new File("www/index.html");
-                this.setHeaders(ResponseCode._200);
-                this.setContent(file); 
+                //redirect to default page
+                for(File fil : dirContents){
+                    if(fil.getName().startsWith("index")){
+                        file = new File(fil.getPath());
+                        this.setContent(file);
+                    }else{
+                        
+                        //if no index file print files and directories in www/
+                        String files = "";
+                        for(String s: dir.list())
+                            files+=s + "\n";
+                        this.content = files.getBytes();
+                    }
+                }
+                this.setHeaders(ResponseCode._200); 
             }else if (file.exists()){
+                //file found
                 this.setHeaders(ResponseCode._200);
                 this.setContent(file);
-                System.out.println("file exists");
             }else
+                //file not found
                 this.setHeaders(ResponseCode._404);
+
+            case PUT:
+            case POST:
+            case TRACE:
+            case CONNECT:
+                this.setHeaders(ResponseCode._501);
         } 
     }
 
@@ -67,7 +88,7 @@ public class HTTPResponse
     }
 
     /**
-     * Reads the contents of a file
+     * Read the contents of a file
      */
     public void setContent(File file) throws IOException{                             
         InputStream in = new FileInputStream(file);
@@ -90,6 +111,14 @@ public class HTTPResponse
         headers.add("Server: Robert's Webserver"+ "\r\n");
         headers.add("Connection: close"+ "\r\n\r\n");  
     } 
+
+    /**
+    *  Add HTTP header
+    *  @param header header to add
+    */
+    public void addheader(String header){
+        this.headers.add(header);
+    }
 
     /**
      * Return HTTP Response Headers
