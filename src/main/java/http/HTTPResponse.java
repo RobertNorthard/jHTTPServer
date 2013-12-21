@@ -2,6 +2,7 @@ package http;
 
 import java.util.*;
 import java.io.*;
+import java.net.*;
 
 /**
  * A class that represents a HTTP response.
@@ -12,6 +13,9 @@ import java.io.*;
 public class HTTPResponse
 {       
     private static final String HTTP_VERSION = "HTTP/1.1";
+    private static final String DIRECTORY = "www";
+    private static final String DEFAULT = "index";
+
     private List<String> headers = new ArrayList<String>();
     private byte[] content = null;
     private HTTPRequest request = null;
@@ -31,13 +35,13 @@ public class HTTPResponse
     private void handleRequest() throws IOException{
 
         String resourcePath = "www" + this.request.getResource();
-        File dir = new File("www/");
+        File dir = new File(DIRECTORY);
         File[] dirContents = dir.listFiles();
 
         switch(request.getRequestMethod()){
 
             case HEAD: 
-            this.setHeaders(ResponseCode._200);
+            this.setHeaders(ResponseCode._200, null);
             break;
             case GET: 
             File file = new File(resourcePath);
@@ -45,33 +49,46 @@ public class HTTPResponse
             if(request.getResource().equals("/")){
                 //redirect to default page
                 for(File fil : dirContents){
-                    if(fil.getName().startsWith("index")){
+                    if(fil.getName().startsWith(DEFAULT)){
                         file = new File(fil.getPath());
                         this.setContent(file);
-                    }else{
-                        
-                        //if no index file print files and directories in www/
-                        String files = "";
-                        for(String s: dir.list())
-                            files+=s + "\n";
-                        this.content = files.getBytes();
-                    }
+                    }else{ this.content = this.listDirectory(dir).getBytes(); this.setHeaders(ResponseCode._200, "Content-Type:text/html"); }
                 }
-                this.setHeaders(ResponseCode._200); 
+
+                this.setHeaders(ResponseCode._200, this.getContentType(file)); 
+
             }else if (file.exists()){
                 //file found
-                this.setHeaders(ResponseCode._200);
+                this.setHeaders(ResponseCode._200, this.getContentType(file));
                 this.setContent(file);
             }else
                 //file not found
-                this.setHeaders(ResponseCode._404);
-
+                this.setHeaders(ResponseCode._404,null);
+            break;
             case PUT:
             case POST:
             case TRACE:
             case CONNECT:
-                this.setHeaders(ResponseCode._501);
+                this.setHeaders(ResponseCode._501, null);
         } 
+    }
+
+    /**
+    *  Returns a list of the directories and files in a directory
+    *  @param dir directory to list contents of
+    *  @return a list of the directories and files in a directory, if fir not a directory return null
+    */
+    private String listDirectory(File dir){
+        //if no index file print files and directories in www/
+        StringBuilder fileList = new StringBuilder();
+        
+        if(dir.isDirectory()){
+            for(String fileName: dir.list()){
+                fileList.append("<a href =" + fileName + ">" + fileName + "</a></br>");
+            }
+            return fileList.toString();
+            }
+        return null;
     }
 
     /**
@@ -104,19 +121,24 @@ public class HTTPResponse
 
     /**
      * Set the HTTP Headers
+     * @param code HTTP response code
      */
-    public void setHeaders(ResponseCode code){
-        headers.add(this.HTTP_VERSION  + " " + code.toString() + "\r\n");
-        headers.add("Date: " + new Date().toString()+ "\r\n");
-        headers.add("Server: Robert's Webserver"+ "\r\n");
-        headers.add("Connection: close"+ "\r\n\r\n");  
+    private void setHeaders(ResponseCode code, String contentType){
+        this.addHeader(this.HTTP_VERSION  + " " + code.toString() + "\r\n");
+        this.addHeader("Date: " + new Date().toString()+ "\r\n");
+        this.addHeader("Server: Robert's Webserver"+ "\r\n");
+
+        if(contentType != null)
+            this.addHeader("Content-Type:" + contentType + "\r\n");
+
+        this.addHeader("Connection: close"+ "\r\n\r\n");  
     } 
 
     /**
     *  Add HTTP header
     *  @param header header to add
     */
-    public void addheader(String header){
+    public void addHeader(String header){
         this.headers.add(header);
     }
 
@@ -124,8 +146,13 @@ public class HTTPResponse
      * Return HTTP Response Headers
      * @return HTTP Response headers
      */
-    public List<String> getHeaders(){
-        return this.headers;
+    public String getHeaders(){
+        StringBuilder headers = new StringBuilder();
+
+        for(String s: this.headers){
+            headers.append(s + "\n");
+        }
+        return headers.toString();
     }
 
     /**
@@ -134,5 +161,15 @@ public class HTTPResponse
      */
     public byte[] getContent(){
         return this.content;
+    }
+
+    
+    /**
+    *  Returns MIME Content type
+    *  @param File file to guess content type
+    *  @return MIME content type
+    */
+    public String getContentType(File file){
+        return URLConnection.guessContentTypeFromName(file.getName());
     }
 }
