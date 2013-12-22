@@ -15,7 +15,7 @@ $ nc localhost 9000 < http-request
 
 <h3>HTTP Request Example</h3>
 
-<pre><code>GET /index.html HTTP/1.1M
+<pre><code>GET /index.html HTTP/1.1
 Host: localhost:9000
 Connection: close
 </pre></code>
