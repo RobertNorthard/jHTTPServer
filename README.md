@@ -1,7 +1,7 @@
 jHTTPServer
 ===========
 
-A basic HTTP Server. 
+A basic web server. 
 
 <h3>HTTP Library</h3>
 
