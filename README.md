@@ -28,7 +28,7 @@ Connection:close
 
 Please not the request/responses line/headers must all end with carriage return and a line feed.
 
-<h3>TODO</h3>
+<h3>Proposed Modifications</h3>
 
 <ul>
 <li>Log HTTP Requests and Responses</li>
