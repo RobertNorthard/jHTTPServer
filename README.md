@@ -11,7 +11,6 @@ The HTTP library that is based on the <a href="http://www.ietf.org/rfc/rfc2616.t
 <h3>Example use</h3>
 <pre><code>$ java Tester &
 $ nc localhost 9000 < http-request
-
 </pre></code>
 
 <h3>HTTP Request Example</h3>
@@ -25,7 +24,6 @@ Connection: close
 <pre><code>HTTP/1.1 200 OK
 Content-Type:text\html
 Connection:close
-
 </pre></code>
 
 Please not the request/responses line/headers must all end with carriage return and a line feed.
